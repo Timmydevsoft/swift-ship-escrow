@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,10 +41,11 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-
+        Long expirationTime = Instant.now().toEpochMilli() + (5*60*1000);
         claims.put("id", user.getId());
         claims.put("role", user.getRoles());
         claims.put("email", user.getEmail());
+        claims.put("expiration_time", expirationTime);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(user.getEmail())

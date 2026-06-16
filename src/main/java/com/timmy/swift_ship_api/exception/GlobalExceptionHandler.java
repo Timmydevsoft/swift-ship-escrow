@@ -20,6 +20,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    ResponseEntity<Map<String, Object>> handleJwtError(AccessDeniedException ex){
+        Map<String, Object> res = new HashMap<>();
+        res.put("status", 401);
+        res.put("message", ex.getMessage() );
+        res.put("error", "Unauthorised");
+
+        return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     ResponseEntity<Map<String, Object>> handleNotFoundException(ResourceNotFoundException ex){
         Map<String, Object> res = new HashMap<>();
