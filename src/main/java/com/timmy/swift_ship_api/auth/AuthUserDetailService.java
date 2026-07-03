@@ -1,9 +1,9 @@
 package com.timmy.swift_ship_api.auth;
 
 
-import com.timmy.swift_ship_api.entity.User;
+import com.timmy.swift_ship_api.user.User;
 import com.timmy.swift_ship_api.exception.ResourceNotFoundException;
-import com.timmy.swift_ship_api.repo.UserRepository;
+import com.timmy.swift_ship_api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

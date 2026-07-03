@@ -1,4 +1,4 @@
-package com.timmy.swift_ship_api.service.impl;
+package com.timmy.swift_ship_api.user.service.impl;
 
 import com.timmy.swift_ship_api.dto.proxy.LoginSessionProxy;
 import com.timmy.swift_ship_api.dto.request.CreateUserRequestDto;
@@ -6,17 +6,16 @@ import com.timmy.swift_ship_api.dto.request.LoginRequest;
 import com.timmy.swift_ship_api.dto.response.CreateUserResponse;
 import com.timmy.swift_ship_api.dto.response.LoginResponse;
 import com.timmy.swift_ship_api.dto.response.ResponseWrapper;
-import com.timmy.swift_ship_api.entity.User;
-import com.timmy.swift_ship_api.entity.enums.Roles;
+import com.timmy.swift_ship_api.user.User;
+import com.timmy.swift_ship_api.enums.Roles;
 import com.timmy.swift_ship_api.exception.AccessDeniedException;
 import com.timmy.swift_ship_api.exception.DuplicateResourceException;
 import com.timmy.swift_ship_api.exception.ResourceNotFoundException;
-import com.timmy.swift_ship_api.repo.UserRepository;
-import com.timmy.swift_ship_api.service.service.JwtService;
-import com.timmy.swift_ship_api.service.service.UserService;
+import com.timmy.swift_ship_api.user.UserRepository;
+import com.timmy.swift_ship_api.user.service.JwtService;
+import com.timmy.swift_ship_api.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -49,8 +48,6 @@ public class UserServiceImpl implements UserService {
         roles.add(Roles.MERCHANT);
         User newUser = User.builder()
                 .email(payload.getEmail())
-                .firstName(payload.getFirstName())
-                .lastName(payload.getLastName())
                 .password(passwordEncoder.encode(payload.getPassword()))
                 .roles(roles)
                 .build();
@@ -59,8 +56,6 @@ public class UserServiceImpl implements UserService {
         var data = CreateUserResponse.builder()
                 .email(savedUser.getEmail())
                 .id(savedUser.getId())
-                .lastName(savedUser.getLastName())
-                .firstName(savedUser.getFirstName())
                 .build();
 
             return ResponseWrapper.<CreateUserResponse>builder()
@@ -91,7 +86,7 @@ public class UserServiceImpl implements UserService {
                     .key(x_id_key)
                     .build();
             redisTemplate.opsForValue().set(x_id_key, session);
-            LoginResponse response = new LoginResponse(x_id_key, user.getId(), user.getFirstName(), user.getLastName());
+            LoginResponse response = new LoginResponse(x_id_key, user.getId(), user.getEmail());
             return ResponseWrapper.<LoginResponse>builder()
                     .data(response)
                     .httpStatusCode(HttpStatus.OK)

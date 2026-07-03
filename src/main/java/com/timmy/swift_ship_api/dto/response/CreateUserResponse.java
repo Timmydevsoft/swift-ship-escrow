@@ -10,7 +10,5 @@ import java.util.UUID;
 @NoArgsConstructor
 public class CreateUserResponse {
     private String email;
-    private String firstName;
-    private String lastName;
     private UUID id;
 }

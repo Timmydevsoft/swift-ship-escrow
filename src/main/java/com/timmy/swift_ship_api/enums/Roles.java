@@ -1,4 +1,4 @@
-package com.timmy.swift_ship_api.entity.enums;
+package com.timmy.swift_ship_api.enums;
 
 public enum Roles {
     MERCHANT,

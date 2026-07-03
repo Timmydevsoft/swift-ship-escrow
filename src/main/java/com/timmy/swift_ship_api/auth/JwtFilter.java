@@ -1,6 +1,6 @@
 package com.timmy.swift_ship_api.auth;
 
-import com.timmy.swift_ship_api.service.service.JwtService;
+import com.timmy.swift_ship_api.user.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

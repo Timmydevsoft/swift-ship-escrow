@@ -1,6 +1,5 @@
-package com.timmy.swift_ship_api.controller;
+package com.timmy.swift_ship_api.health;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +18,6 @@ public class HealthCheckController {
     public ResponseEntity<HealthResponse> handleHealthCheck(){
         Map<String, Object> res = new HashMap<>();
         res.put("status", 200);
-        res.put("message", "Health ok");
         HealthResponse response = new HealthResponse("Health is Ok", 200);
 
         return ResponseEntity.ok(response) ;

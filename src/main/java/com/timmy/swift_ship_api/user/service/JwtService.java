@@ -1,6 +1,6 @@
-package com.timmy.swift_ship_api.service.service;
+package com.timmy.swift_ship_api.user.service;
 
-import com.timmy.swift_ship_api.entity.User;
+import com.timmy.swift_ship_api.user.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface JwtService {

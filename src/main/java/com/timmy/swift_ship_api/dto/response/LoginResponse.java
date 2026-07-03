@@ -14,6 +14,5 @@ import java.util.UUID;
 public class LoginResponse {
     private String x_id_key;
     private UUID user_id;
-    private String firstName;
-    private String lastName;
+    private String email;
 }

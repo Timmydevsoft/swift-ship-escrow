@@ -1,4 +1,4 @@
-package com.timmy.swift_ship_api.service.service;
+package com.timmy.swift_ship_api.user.service;
 
 import com.timmy.swift_ship_api.dto.request.CreateUserRequestDto;
 import com.timmy.swift_ship_api.dto.request.LoginRequest;
@@ -10,5 +10,4 @@ public interface UserService {
     ResponseWrapper<CreateUserResponse> signUp(CreateUserRequestDto payload);
 
     ResponseWrapper<LoginResponse> login(LoginRequest payload);
-
 }

@@ -1,10 +1,10 @@
 package com.timmy.swift_ship_api.auth;
 
+import com.timmy.swift_ship_api.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 public class AuthUserDetails implements UserDetails {
@@ -16,6 +16,9 @@ public class AuthUserDetails implements UserDetails {
         this.email = email;
         this.password = password;
         this.authorities = authorities;
+    }
+
+    public AuthUserDetails(User user) {
     }
 
     @Override

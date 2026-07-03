@@ -3,7 +3,7 @@ package com.timmy.swift_ship_api.config;
 
 import com.timmy.swift_ship_api.auth.AuthUserDetailService;
 import com.timmy.swift_ship_api.auth.JwtFilter;
-import com.timmy.swift_ship_api.service.service.JwtService;
+import com.timmy.swift_ship_api.user.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

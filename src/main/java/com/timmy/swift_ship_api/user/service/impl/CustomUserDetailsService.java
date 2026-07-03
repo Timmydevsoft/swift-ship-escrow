@@ -1,7 +1,8 @@
-package com.timmy.swift_ship_api.service.impl;
+package com.timmy.swift_ship_api.user.service.impl;
 
-import com.timmy.swift_ship_api.repo.UserRepository;
-import com.timmy.swift_ship_api.entity.User;
+import com.timmy.swift_ship_api.auth.AuthUserDetails;
+import com.timmy.swift_ship_api.user.UserRepository;
+import com.timmy.swift_ship_api.user.User;
 import com.timmy.swift_ship_api.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,8 +18,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws ResourceNotFoundException {
         User user = userRepo.findUserByEmail(email).orElseThrow(()->new ResourceNotFoundException("No such user with email "+email));
-//        return new CustomUserDetails(user);
-        return null;
+
+        return new AuthUserDetails(user);
+//        return null;
     }
 
 }

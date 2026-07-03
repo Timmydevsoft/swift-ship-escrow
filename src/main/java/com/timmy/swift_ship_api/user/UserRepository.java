@@ -1,6 +1,5 @@
-package com.timmy.swift_ship_api.repo;
+package com.timmy.swift_ship_api.user;
 
-import com.timmy.swift_ship_api.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

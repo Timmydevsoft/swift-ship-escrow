@@ -1,11 +1,11 @@
-package com.timmy.swift_ship_api.controller;
+package com.timmy.swift_ship_api.user;
 
 import com.timmy.swift_ship_api.dto.request.CreateUserRequestDto;
 import com.timmy.swift_ship_api.dto.request.LoginRequest;
 import com.timmy.swift_ship_api.dto.response.CreateUserResponse;
 import com.timmy.swift_ship_api.dto.response.LoginResponse;
 import com.timmy.swift_ship_api.dto.response.ResponseWrapper;
-import com.timmy.swift_ship_api.service.service.UserService;
+import com.timmy.swift_ship_api.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
