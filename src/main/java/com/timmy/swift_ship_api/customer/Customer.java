@@ -19,6 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Customer {
     @Id
+    @GeneratedValue
     private UUID id;;
 
     private String firstName;

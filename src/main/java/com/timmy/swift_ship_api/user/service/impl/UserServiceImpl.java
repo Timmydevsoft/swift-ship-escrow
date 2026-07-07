@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
             return ResponseWrapper.<LoginResponse>builder()
                     .data(response)
                     .httpStatusCode(HttpStatus.OK)
-                    .message("Login successfull")
+                    .message("Login successful")
                     .build();
         }
         catch(BadCredentialsException ex){

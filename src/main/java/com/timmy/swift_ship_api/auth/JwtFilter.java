@@ -1,11 +1,14 @@
 package com.timmy.swift_ship_api.auth;
 
+import com.timmy.swift_ship_api.dto.proxy.LoginSessionProxy;
+import com.timmy.swift_ship_api.exception.AccessDeniedException;
 import com.timmy.swift_ship_api.user.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,21 +24,32 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final AuthUserDetailService authUserDetailService;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, java.io.IOException {
+        String authCredential = request.getHeader("x-id-key");
 
-        String authHeader = request.getHeader("Authorization");
+//        String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
+        LoginSessionProxy session= null;
+
+        if(authCredential !=null){
+            session = (LoginSessionProxy) redisTemplate.opsForValue().get(authCredential);
+        }
 
 
-
-
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
+        if(session !=null){
+            token = session.getToken();
             username = jwtService.extractEmail(token);
         }
+
+
+//        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+//            token = authHeader.substring(7);
+//            username = jwtService.extractEmail(token);
+//        }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 

@@ -6,10 +6,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.UUID;
 
 public class AuthUserDetails implements UserDetails {
     private String email;
     private String password;
+
     private Set<GrantedAuthority> authorities;
 
     public AuthUserDetails(String email, String password, Set<GrantedAuthority> authorities) {
@@ -35,6 +37,7 @@ public class AuthUserDetails implements UserDetails {
     public String getUsername() {
         return this.email;
     }
+
 
     @Override
     public boolean isAccountNonExpired() {

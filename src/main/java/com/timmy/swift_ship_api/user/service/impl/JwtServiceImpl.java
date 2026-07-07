@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -61,6 +62,10 @@ public class JwtServiceImpl implements JwtService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    public UUID extractUserId(String token){
+        return UUID.fromString(extractClaim(token).getId());
     }
 
     public String extractEmail(String token){
