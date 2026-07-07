@@ -1,0 +1,2 @@
+ALTER TABLE merchants
+ADD COLUMN avatar VARCHAR(250)

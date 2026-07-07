@@ -1,6 +1,7 @@
 package com.timmy.swift_ship_api.customer.service.impl;
 
 import com.timmy.swift_ship_api.auth.AuthUserDetails;
+import com.timmy.swift_ship_api.auth.AuthUtils;
 import com.timmy.swift_ship_api.customer.Customer;
 import com.timmy.swift_ship_api.customer.CustomerRepository;
 import com.timmy.swift_ship_api.customer.dto.CustomerProfileRequestDto;
@@ -33,11 +34,12 @@ import java.util.UUID;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepo;
     private final UserRepository userRepo;
+    private final AuthUtils authUtils;
 
 
     @Override
     public ResponseWrapper<CustomerProfileUpdateResponse> createCustomerProfile(CustomerProfileRequestDto dto) {
-        String userName = getUserId();
+        String userName = authUtils.getUserId();
         Optional<User> isAUser = userRepo.findUserByEmail(userName);
        if(isAUser.isEmpty()) throw new ResourceNotFoundException("user not found");
 
@@ -70,18 +72,5 @@ public class CustomerServiceImpl implements CustomerService {
                 .build();
     }
 
-    private static String getUserId() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if(auth ==null || !auth.isAuthenticated() ){
-            throw new AccessDeniedException("Unauthenticated");
-        }
-        String userId = null;
-        Object principal = auth.getPrincipal();
-        boolean isPrincipalAuth = principal instanceof AuthUserDetails;
-
-        if(!isPrincipalAuth) throw new AccessDeniedException("Invalid credentials");
-        userId= ((AuthUserDetails) principal).getUsername();
-        return userId;
-    }
 }

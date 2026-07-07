@@ -25,6 +25,9 @@ import java.util.UUID;
     private UUID id;
 
     @Column
+    private String avatar;
+
+    @Column
     private String businessName;
 
     @Column
