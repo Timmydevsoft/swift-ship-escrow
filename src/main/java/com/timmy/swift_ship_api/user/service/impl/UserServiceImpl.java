@@ -1,5 +1,6 @@
 package com.timmy.swift_ship_api.user.service.impl;
 
+import com.timmy.swift_ship_api.auth.AuthUtils;
 import com.timmy.swift_ship_api.dto.proxy.LoginSessionProxy;
 import com.timmy.swift_ship_api.dto.request.CreateUserRequestDto;
 import com.timmy.swift_ship_api.dto.request.LoginRequest;
@@ -14,6 +15,7 @@ import com.timmy.swift_ship_api.exception.ResourceNotFoundException;
 import com.timmy.swift_ship_api.user.UserRepository;
 import com.timmy.swift_ship_api.user.service.JwtService;
 import com.timmy.swift_ship_api.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,10 +27,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+
+import static org.apache.commons.math3.stat.ranking.TiesStrategy.RANDOM;
 
 @Slf4j
 @Service
@@ -39,15 +40,34 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final AuthUtils authUtils;
+
+
+    private String generateIdentifier() {
+        Random random = new Random();
+        int randomNum = 1_000_000 + random.nextInt(9_000_000); // 1,000,000 to 9,999,999
+        return "SW" + randomNum;
+    }
 
     @Override
     public ResponseWrapper<CreateUserResponse> signUp(CreateUserRequestDto payload) {
+
+        String swiftId ;
+
+        do{
+            swiftId= generateIdentifier();
+        }
+        while(userRepo.existsBySwiftId(swiftId));
+
+
         Optional<User> existingUserOptional = userRepo.findUserByEmail(payload.getEmail());
         if(existingUserOptional.isPresent()) throw new DuplicateResourceException("Email already taken");
         Set<Roles> roles = new HashSet<>();
         roles.add(Roles.MERCHANT);
         User newUser = User.builder()
                 .email(payload.getEmail())
+                .swiftId(swiftId)
+                .isActive(true)
                 .password(passwordEncoder.encode(payload.getPassword()))
                 .roles(roles)
                 .build();
@@ -56,6 +76,7 @@ public class UserServiceImpl implements UserService {
         var data = CreateUserResponse.builder()
                 .email(savedUser.getEmail())
                 .id(savedUser.getId())
+                .swiftId(savedUser.getSwiftId())
                 .build();
 
             return ResponseWrapper.<CreateUserResponse>builder()
@@ -72,6 +93,23 @@ public class UserServiceImpl implements UserService {
         if(optionalUser.isEmpty()) throw new ResourceNotFoundException("Incorrect email");
         User user = optionalUser.get();
         return getAuthResponse(payload, user);
+    }
+
+    @Override
+    public User getLoggedInUser() {
+        String userEmail = authUtils.getUserId();
+
+        Optional<User> isValidUser = userRepo.findUserByEmail(userEmail);
+        if(isValidUser.isEmpty()) throw new ResourceNotFoundException("Not a valid user");
+
+        return isValidUser.get();
+    }
+
+    @Override
+    public User getUserBySwiftId(String swiftId) {
+        Optional<User> isValidUser = userRepo.findUserBySwiftId(swiftId);
+        if(isValidUser.isEmpty()) throw new ResourceNotFoundException("No such user, incorrect escrow id");
+        return isValidUser.get();
     }
 
     private ResponseWrapper<LoginResponse> getAuthResponse(LoginRequest payload, User user){

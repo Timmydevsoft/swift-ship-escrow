@@ -1,6 +1,4 @@
 package com.timmy.swift_ship_api.customer.service.impl;
-
-import com.timmy.swift_ship_api.auth.AuthUserDetails;
 import com.timmy.swift_ship_api.auth.AuthUtils;
 import com.timmy.swift_ship_api.customer.Customer;
 import com.timmy.swift_ship_api.customer.CustomerRepository;
@@ -8,7 +6,6 @@ import com.timmy.swift_ship_api.customer.dto.CustomerProfileRequestDto;
 import com.timmy.swift_ship_api.customer.dto.CustomerProfileUpdateResponse;
 import com.timmy.swift_ship_api.customer.service.CustomerService;
 import com.timmy.swift_ship_api.dto.response.ResponseWrapper;
-import com.timmy.swift_ship_api.exception.AccessDeniedException;
 import com.timmy.swift_ship_api.exception.DuplicateResourceException;
 import com.timmy.swift_ship_api.exception.ResourceNotFoundException;
 import com.timmy.swift_ship_api.user.User;
@@ -19,12 +16,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -72,5 +65,10 @@ public class CustomerServiceImpl implements CustomerService {
                 .build();
     }
 
-
+    @Override
+    public Customer getCustomerByUser(User user) {
+        Optional<Customer> customerExists = customerRepo.findCustomerByUser(user);
+        if(customerExists.isEmpty()) throw new ResourceNotFoundException("Target Customer is a valid customer");
+        return customerExists.get();
+    }
 }

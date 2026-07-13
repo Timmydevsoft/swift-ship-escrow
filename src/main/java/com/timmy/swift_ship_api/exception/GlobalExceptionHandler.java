@@ -45,8 +45,18 @@ public class GlobalExceptionHandler {
         Map<String, Object> res = new HashMap<>();
         res.put("status", 422);
         res.put("message", ex.getMessage() );
-        res.put("error", "resource not found");
+        res.put("error", "Already exist");
 
         return new ResponseEntity<>(res, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    ResponseEntity<Map<String, Object>> handleBadRequestException(BadRequestException ex){
+        Map<String, Object> res = new HashMap<>();
+        res.put("message", ex.getMessage());
+        res.put("status", 400);
+        res.put("error", "Bad request");
+
+        return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 }

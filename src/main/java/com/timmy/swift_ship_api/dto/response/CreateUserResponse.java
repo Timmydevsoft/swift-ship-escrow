@@ -11,4 +11,5 @@ import java.util.UUID;
 public class CreateUserResponse {
     private String email;
     private UUID id;
+    private String swiftId;
 }

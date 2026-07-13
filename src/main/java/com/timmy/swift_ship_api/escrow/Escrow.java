@@ -1,8 +1,6 @@
 package com.timmy.swift_ship_api.escrow;
 
 import com.timmy.swift_ship_api.customer.Customer;
-import com.timmy.swift_ship_api.enums.EscrowPaymentStatus;
-import com.timmy.swift_ship_api.enums.EscrowStatus;
 import com.timmy.swift_ship_api.merchant.Merchant;
 import com.timmy.swift_ship_api.transaction.Transaction;
 import jakarta.persistence.*;
@@ -46,7 +44,7 @@ public class Escrow {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private EscrowStatus status;
+    private EscrowStatus  status;
 
     @OneToMany(mappedBy = "escrow")
     private List<Transaction> transactions;

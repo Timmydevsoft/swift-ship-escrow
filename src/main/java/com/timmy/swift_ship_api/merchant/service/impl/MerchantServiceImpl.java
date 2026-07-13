@@ -78,4 +78,10 @@ public class MerchantServiceImpl implements MerchantService {
                 .httpStatusCode(HttpStatusCode.valueOf(HttpStatus.CREATED.value()))
                 .build();
     }
+
+    @Override
+    public Optional<Merchant> getMerchantByUser(User user) {
+        return merchantRepo.findMerchantByUser(user);
+    }
+
 }
