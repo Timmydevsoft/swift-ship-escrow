@@ -2,6 +2,7 @@ package com.timmy.swift_ship_api.escrow;
 
 public enum EscrowStatus {
     PENDING_ACCEPTANCE,
+    ACCEPTED,
     ACTIVE,
     FUNDED,
     SHIPPED,

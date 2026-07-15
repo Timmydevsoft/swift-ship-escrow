@@ -5,10 +5,9 @@ import com.timmy.swift_ship_api.escrow.dto.CreateEscrowDto;
 import com.timmy.swift_ship_api.escrow.dto.CreateEscrowResponse;
 import com.timmy.swift_ship_api.escrow.service.EscrowService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/escrow")
@@ -19,5 +18,10 @@ public class EscrowController {
     @PostMapping("initiate")
     public ResponseWrapper<CreateEscrowResponse> initiateEscrow(@RequestBody CreateEscrowDto dto){
         return escrowService.initiateEscrow(dto);
+    }
+
+    @PatchMapping("/accept/{id}")
+    public ResponseWrapper<CreateEscrowResponse> acceptEscrowInvite(@PathVariable UUID id){
+        return escrowService.updateEscrowInitiation(id);
     }
 }

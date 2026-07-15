@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class EscrowServiceImpl implements EscrowService {
     private final CustomerService customerService;
     private final UserService userService;
     private final EscrowRepository escrowRepo;
-
+    private final AuthUtils authUtils;
 
 
     @Override
@@ -65,32 +66,61 @@ public class EscrowServiceImpl implements EscrowService {
                 .customer(customer)
                 .merchant(merchant)
                 .build();
-        CreateEscrowResponse response =CreateEscrowResponse.builder().build();
 
         Escrow savedEscrow = escrowRepo.save(newEscrow);
+        var resData = getCreateEscrowResponse(savedEscrow, customer);
 
-        var resData = CreateEscrowResponse.builder()
-                .price(savedEscrow.getPrice()).
-                description(savedEscrow.getDescription()).
-                customer(
-                        CustomerSummary
-                                .builder()
-                                .firstName(customer.getFirstName())
-                                .lastName(customer.getLastName())
-                                .avatar(customer.getAvatar())
-                                .customerId(customer.getId())
-                                .build()
-                )
-                .escrowStatus(savedEscrow.getStatus())
-                .itemName(savedEscrow.getItemName())
-                .build();
-
-
-        ResponseWrapper.<CreateEscrowResponse>builder()
+        return ResponseWrapper.<CreateEscrowResponse>builder()
                 .data(resData)
                 .message("Escrow created successfully")
                 .httpStatusCode(HttpStatus.CREATED)
                 .build();
-        return null;
+
+    }
+
+    @Override
+    public ResponseWrapper<CreateEscrowResponse> updateEscrowInitiation(UUID escrowId) {
+
+        Optional<Escrow> optionalEscrow = escrowRepo.findById(escrowId);
+        if(optionalEscrow.isEmpty())throw new ResourceNotFoundException("Escrow not found");
+        User loggedInUser = authUtils.getLoggedUser();
+        Escrow targetEscrow = optionalEscrow.get();
+
+        if (targetEscrow.getStatus() != EscrowStatus.PENDING_ACCEPTANCE) {
+            throw new BadRequestException("This escrow has already been responded to.");
+        }
+
+        Customer loggedInCustomer = customerService.getCustomerByUser(loggedInUser);
+
+        if(!loggedInCustomer.getId().equals(targetEscrow.getCustomer().getId()))throw new BadRequestException("You are not authorized to perform the action");
+        targetEscrow.setStatus(EscrowStatus.ACCEPTED);
+        var updatedEscrow =escrowRepo.save(targetEscrow);
+
+        var resData = getCreateEscrowResponse(updatedEscrow, loggedInCustomer);
+        return ResponseWrapper.<CreateEscrowResponse>builder()
+                .data(resData)
+                .message("Escrow accepted successfully")
+                .httpStatusCode(HttpStatus.OK)
+                .build();
+    }
+
+    private CustomerSummary getCustomerSummary(Customer customer){
+        return CustomerSummary
+                .builder()
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .avatar(customer.getAvatar())
+                .customerId(customer.getId())
+                .build();
+    }
+
+    private CreateEscrowResponse getCreateEscrowResponse(Escrow escrow, Customer customer){
+        return CreateEscrowResponse.builder()
+                .price(escrow.getPrice()).
+                description(escrow.getDescription()).
+                customer(getCustomerSummary(customer))
+                .escrowStatus(escrow.getStatus())
+                .itemName(escrow.getItemName())
+                .build();
     }
 }
