@@ -104,6 +104,13 @@ public class EscrowServiceImpl implements EscrowService {
                 .build();
     }
 
+    @Override
+    public Escrow getEscrowById(UUID escrowId) {
+        Optional<Escrow> escrow = escrowRepo.findById(escrowId);
+        if(escrow.isEmpty())throw  new ResourceNotFoundException("Referenced escrow not found");
+        return escrow.get();
+    }
+
     private CustomerSummary getCustomerSummary(Customer customer){
         return CustomerSummary
                 .builder()

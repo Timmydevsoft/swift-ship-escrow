@@ -6,6 +6,7 @@ import com.timmy.swift_ship_api.dto.response.CreateUserResponse;
 import com.timmy.swift_ship_api.dto.response.LoginResponse;
 import com.timmy.swift_ship_api.dto.response.ResponseWrapper;
 import com.timmy.swift_ship_api.user.User;
+import io.swagger.v3.oas.models.info.Contact;
 
 public interface UserService {
     ResponseWrapper<CreateUserResponse> signUp(CreateUserRequestDto payload);
@@ -15,4 +16,5 @@ public interface UserService {
     User getLoggedInUser();
 
     User getUserBySwiftId(String swiftId);
+
 }

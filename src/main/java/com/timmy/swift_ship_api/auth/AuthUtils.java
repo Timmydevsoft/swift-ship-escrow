@@ -1,14 +1,21 @@
 package com.timmy.swift_ship_api.auth;
 
 import com.timmy.swift_ship_api.exception.AccessDeniedException;
+import com.timmy.swift_ship_api.exception.ResourceNotFoundException;
 import com.timmy.swift_ship_api.user.User;
 import com.timmy.swift_ship_api.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
+@RequiredArgsConstructor
 public class AuthUtils {
+    private final UserRepository userRepo;
+
     public  String getUserId() {
         return getPrincipal().getUsername();
     }
@@ -27,7 +34,9 @@ public class AuthUtils {
         return (AuthUserDetails) principal;
     }
 
-    public User getLoggedUser(){
-        return null;
+    public User getLoggedInUser(){
+        Optional<User> optionalUser = userRepo.findUserByEmail(getPrincipal().getUsername());
+        if(optionalUser.isEmpty()) throw new ResourceNotFoundException("No such user");
+        return optionalUser.get();
     }
 }
